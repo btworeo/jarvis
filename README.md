@@ -1,2 +1,1 @@
-# jarvis
-fcuk u.
+# fcuk u.
