@@ -1,40 +1,48 @@
-// xamarth
 #include <bits/stdc++.h>
 using namespace std;
+
 using State = int;
 using Symbol = int;
 using StateSet = set<State>;
 
 int main()
 {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  int n, m;
+  // ios::sync_with_stdio(false);
+  // cin.tie(nullptr);
 
-  if (!(cin >> n >> m))
-  {
-    return 0;
-  }
+  int n, m;
+  cout << "\nNFA to DFA Conversion\n\n";
+  cout << "Enter number of NFA states: ";
+  cin >> n;
+  cout << "Enter number of input symbols: ";
+  cin >> m;
 
   int start;
+  cout << "Enter start state: ";
   cin >> start;
-  int k;
-  cin >> k;
-  vector<bool> isFinal(n, false);
 
+  int k;
+  cout << "Enter number of final states: ";
+  cin >> k;
+
+  vector<bool> isFinal(n, false);
+  cout << "Enter final states: ";
   for (int i = 0; i < k; ++i)
   {
     int f;
     cin >> f;
-
     if (f >= 0 && f < n)
-    {
       isFinal[f] = true;
-    }
   }
 
   int t;
+  cout << "Enter number of transitions: ";
   cin >> t;
+
+  cout << "\nEnter transitions in format:\n";
+  cout << "  from  symbol  to\n";
+  cout << "  (use symbol = -1 for epsilon)\n\n";
+
   vector<vector<vector<State>>> transitions(n, vector<vector<State>>(m));
   vector<vector<State>> eps(n);
 
@@ -44,213 +52,186 @@ int main()
     cin >> u >> a >> v;
 
     if (a == -1)
-    {
-      if (u >= 0 && u < n)
-      {
-        eps[u].push_back(v);
-      }
-    }
+      eps[u].push_back(v);
     else
-    {
-      if (u >= 0 && u < n && a >= 0 && a < m)
-      {
-        transitions[u][a].push_back(v);
-      }
-    }
+      transitions[u][a].push_back(v);
   }
 
-  auto epsilon_closure = [&](const StateSet &inputSet)
-  {
-    StateSet closure = inputSet;
-    vector<State> work;
-    work.reserve(closure.size());
+  /*=======NFA TABLE=======*/
 
-    for (State s : closure)
+  cout << "\nNFA Transition Table\n";
+  cout << "State\t";
+  for (int a = 0; a < m; ++a)
+    cout << "a" << a << "\t";
+  cout << "ε\n";
+
+  for (int i = 0; i < n; ++i)
+  {
+    cout << i;
+    if (i == start)
+      cout << "(S)";
+    if (isFinal[i])
+      cout << "(F)";
+    cout << "\t";
+
+    for (int a = 0; a < m; ++a)
     {
-      work.push_back(s);
+      if (transitions[i][a].empty())
+        cout << "-\t";
+      else
+      {
+        cout << "{";
+        for (size_t j = 0; j < transitions[i][a].size(); ++j)
+        {
+          if (j)
+            cout << ",";
+          cout << transitions[i][a][j];
+        }
+        cout << "}\t";
+      }
     }
 
-    while (!work.empty())
+    if (eps[i].empty())
+      cout << "-";
+    else
     {
-      State v = work.back();
-      work.pop_back();
-
-      for (State u : eps[v])
+      cout << "{";
+      for (size_t j = 0; j < eps[i].size(); ++j)
       {
-        if (closure.insert(u).second)
-        {
-          work.push_back(u);
-        }
+        if (j)
+          cout << ",";
+        cout << eps[i][j];
       }
+      cout << "}";
+    }
+    cout << "\n";
+  }
+  /*=======NFA → DFA=======*/
+
+  auto epsilon_closure = [&](const StateSet &input)
+  {
+    StateSet closure = input;
+    stack<State> st;
+    for (State s : input)
+      st.push(s);
+
+    while (!st.empty())
+    {
+      State v = st.top();
+      st.pop();
+      for (State u : eps[v])
+        if (closure.insert(u).second)
+          st.push(u);
     }
     return closure;
   };
 
   auto move = [&](const StateSet &S, Symbol a)
   {
-    StateSet dest;
-
+    StateSet result;
     for (State s : S)
-    {
       for (State v : transitions[s][a])
-      {
-        dest.insert(v);
-      }
-    }
-    return dest;
+        result.insert(v);
+    return result;
   };
 
-  map<StateSet, int> dfaStateId;
+  map<StateSet, int> dfaId;
   vector<StateSet> dfaStates;
   vector<vector<int>> dfaTrans;
-  vector<bool> dfaIsFinal;
-  StateSet startSet;
-  startSet.insert(start);
-  StateSet startClosure = epsilon_closure(startSet);
-  dfaStateId[startClosure] = 0;
-  dfaStates.push_back(startClosure);
-  dfaTrans.push_back(vector<int>(m, -1));
-  dfaIsFinal.push_back(false);
+  vector<bool> dfaFinal;
 
-  for (State s : startClosure)
-  {
+  StateSet startSet = epsilon_closure({start});
+  dfaId[startSet] = 0;
+  dfaStates.push_back(startSet);
+  dfaTrans.push_back(vector<int>(m, -1));
+
+  bool startFinal = false;
+  for (State s : startSet)
     if (isFinal[s])
-    {
-      dfaIsFinal[0] = true;
-      break;
-    }
-  }
+      startFinal = true;
+  dfaFinal.push_back(startFinal);
+
   queue<int> q;
   q.push(0);
 
   while (!q.empty())
   {
-    int d = q.front();
+    int cur = q.front();
     q.pop();
-    StateSet currentSet = dfaStates[d];
-
     for (int a = 0; a < m; ++a)
     {
-      StateSet moved = move(currentSet, a);
-
+      StateSet moved = move(dfaStates[cur], a);
       if (moved.empty())
-      {
         continue;
-      }
-      StateSet target = epsilon_closure(moved);
-      auto it = dfaStateId.find(target);
-      int tid;
 
-      if (it == dfaStateId.end())
+      StateSet target = epsilon_closure(moved);
+
+      if (!dfaId.count(target))
       {
-        tid = (int)dfaStates.size();
-        dfaStateId[target] = tid;
+        int id = dfaStates.size();
+        dfaId[target] = id;
         dfaStates.push_back(target);
         dfaTrans.push_back(vector<int>(m, -1));
-        bool fin = false;
 
+        bool fin = false;
         for (State s : target)
-        {
           if (isFinal[s])
-          {
             fin = true;
-            break;
-          }
-        }
-        dfaIsFinal.push_back(fin);
-        q.push(tid);
+        dfaFinal.push_back(fin);
+
+        q.push(id);
       }
-      else
-      {
-        tid = it->second;
-      }
-      dfaTrans[d][a] = tid;
+      dfaTrans[cur][a] = dfaId[target];
     }
   }
+  /*=======DFA TABLE=======*/
 
-  cout << "DFA states (id : set of NFA states):\n";
+  cout << "\nDFA States\n";
   for (size_t i = 0; i < dfaStates.size(); ++i)
   {
-    cout << i << " : {";
+    cout << "D" << i << " = {";
     bool first = true;
-
     for (State s : dfaStates[i])
     {
       if (!first)
-      {
-        cout << ", ";
-      }
+        cout << ",";
       cout << s;
       first = false;
     }
     cout << "}";
-
-    if (dfaIsFinal[i])
-    {
-      cout << "  [final]";
-    }
+    if (dfaFinal[i])
+      cout << " (F)";
     cout << "\n";
   }
 
-  cout << "DFA start state: 0\n";
-  cout << "DFA final states: ";
-  bool any = false;
-
-  for (size_t i = 0; i < dfaIsFinal.size(); ++i)
-  {
-    if (dfaIsFinal[i])
-    {
-      if (any)
-      {
-        cout << " ";
-      }
-      cout << i;
-      any = true;
-    }
-  }
-  if (!any)
-  {
-    cout << "none";
-  }
+  cout << "\nDFA Transition Table\n";
+  cout << "State\t";
+  for (int a = 0; a < m; ++a)
+    cout << "a" << a << "\t";
   cout << "\n";
-  cout << "DFA transition table (rows = state id, columns = symbol 0.." << (m - 1) << "):\n";
 
   for (size_t i = 0; i < dfaTrans.size(); ++i)
   {
-    cout << i << " :";
+    cout << "D" << i;
+    if (i == 0)
+      cout << "(S)";
+    if (dfaFinal[i])
+      cout << "(F)";
+    cout << "\t";
 
     for (int a = 0; a < m; ++a)
     {
-      cout << " " << dfaTrans[i][a];
+      if (dfaTrans[i][a] == -1)
+        cout << "-\t";
+      else
+        cout << "D" << dfaTrans[i][a] << "\t";
     }
     cout << "\n";
   }
+
+  cout << "\nConversion Complete...\n";
+
+  cout << endl;
   return 0;
 }
-
-// xamarth
-// example input:
-// 3 2
-// 0
-// 1
-// 1 2
-// 3
-// 0 0 1
-// 0 1 2
-// 1 0 2
-// 1 1 2
-// 2 0 1
-// -1 0 2
-// 2 1 0
-
-// example output:
-// DFA states (id : set of NFA states):
-// 0 : {0, 1}  [final]
-// 1 : {2}
-// DFA start state: 0
-// DFA final states: 0
-// DFA transition table (rows = state id, columns = symbol 0..1):
-// 0 : 1 1
-// 1 : -1 -1
-
 // xamarth
