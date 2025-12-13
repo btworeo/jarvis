@@ -1,4 +1,10 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <set>
+#include <map>
+#include <queue>
+#include <stack>
+#include <algorithm>
 using namespace std;
 
 using State = int;
