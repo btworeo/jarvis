@@ -7,7 +7,9 @@ create table persons (
     address varchar(100),
     city varchar(50)
 );
+
 show tables;
+
 describe persons;
 
 -- xamarth
@@ -22,6 +24,7 @@ create table employee (
 );
 
 show tables;
+
 describe employee;
 
 -- xamarth
