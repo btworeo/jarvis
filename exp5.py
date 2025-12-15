@@ -1,4 +1,4 @@
-num1 = int(input("Enter first number: "))
+num1 = int(input("\nEnter first number: "))
 num2 = int(input("Enter second number: "))
 add = num1 + num2
 dif = num1 - num2
@@ -13,5 +13,5 @@ print("Multiplication:", mul)
 print("Division:", div)
 print("Floor Division:", floor_div)
 print("Exponentiation:", power)
-print("Modulus:", modulus)
+print("Modulus:", modulus, "\n")
 # xamarth

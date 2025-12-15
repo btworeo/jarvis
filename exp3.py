@@ -8,9 +8,10 @@ def myMax(list1):
 
 list1 = []
 
-n = int(input("Enter number of elements : "))
+n = int(input("\nEnter number of elements : "))
 for i in range(0, n):
     ele = int(input("Enter element: "))
     list1.append(ele)
 
-print("Maximum element in the list is:", myMax(list1))
+print("Maximum element in the list is:", myMax(list1), "\n")
+# xamarth

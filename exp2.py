@@ -6,7 +6,8 @@ def power(base, exp):
         return res
 
 
-base = int(input("Enter the base number: "))
-exponent = int(input("Enter the exponent (integer): "))
+base = int(input("\nEnter base number: "))
+exponent = int(input("Enter exponent (integer): "))
 result = power(base, exponent)
-print(f"{base} raised to the power of {exponent} is {result}.")
+print(f"Result : {result}\n")
+# xamarth

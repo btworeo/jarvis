@@ -1,7 +1,16 @@
+# xamarth
+# import matplotlib
+
+# matplotlib.use("TkAgg")
+
 import matplotlib.pyplot as plt
 
 plt.plot([1, 2, 3, 4], [1, 4, 9, 16])
 plt.title("First Plot")
 plt.xlabel("X Label")
 plt.ylabel("Y Label")
-plt.show()
+# plt.show()
+plt.savefig("plot.png")
+plt.close()
+
+# xamarth

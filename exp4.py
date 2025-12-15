@@ -1,4 +1,6 @@
+# xamarth
 a = [1, 3, 5, 7, 9, [6, 7, 8, 9, 10], "hello"]
+print("")
 print(a)
 a.insert(3, 20)
 print(a)
@@ -15,5 +17,5 @@ fruits = ["apple", "banana", "cherry"]
 x = fruits.pop(1)
 print(x)
 a.clear()
-print(a)
+print(a, "\n")
 # xamarth
