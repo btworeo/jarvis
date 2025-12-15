@@ -61,7 +61,6 @@ int main()
 // 1100111
 // example output:
 // Accepted
-
 // example input:
 // 101010
 // example output:

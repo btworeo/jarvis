@@ -41,5 +41,5 @@ int main()
 
 // example input: hello
 // example output: Length is ODD
-// example input: hello world
+// example input: helloworld
 // example output: Length is EVEN

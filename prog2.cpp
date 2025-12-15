@@ -41,7 +41,6 @@ int main()
   two();
   return 0;
 }
-
 // example input: 001100101
 // example output: ACCEPTED
 // example input: 00110010
