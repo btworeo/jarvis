@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 # xamarth
+
 
 import numpy as np
 

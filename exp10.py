@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
 # xamarth
+
+
 t = ("apple", "banana", "cherry", "mango", "grape", "orange")
 print("\nCreated tuple: ", t)
 print("Second Fruit: ", t[1])

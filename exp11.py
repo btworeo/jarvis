@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
 # xamarth
+
+
 # Creating a set
 Days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
 print(Days)

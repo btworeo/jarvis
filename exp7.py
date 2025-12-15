@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 # xamarth
+
 
 num = int(input("\nEnter a number: "))
 if num == 1:

@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# xamarth
+
+
 num1 = int(input("\nEnter first number: "))
 num2 = int(input("Enter second number: "))
 add = num1 + num2

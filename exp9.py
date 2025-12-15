@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 # xamarth
+
 
 dict1 = {"StdNo": "532", "StuName": "Naveen", "StuAge": 21, "StuCity": "Hyderabad"}
 

@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# xamarth
+
+
 def myMax(list1):
     max = list1[0]
     for x in list1:
